@@ -16,10 +16,10 @@ size_t unix_time() {
 int main(void)
 {
     SVG svg(40, 30);
-    svg.circles.push_back(SVG::Circle(SVG::Point(10, 10), 4, SVG::Color::BLACK,
+    svg.circles.push_back(SVG::Circle({10, 10}, 4, SVG::Color::BLACK,
                                       SVG::Color::GREEN));
     svg.texts.push_back(
-        SVG::Text(SVG::Point(8, 6), "some text", SVG::Color::RED, 8));
+        SVG::Text({8, 6}, "some text", SVG::Color::RED, 8));
     svg.polylines.push_back(SVG::Polyline({
         {1.1, 2.2}, {5.1, 3.2}, {8.1, 9.2},
     }));

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <ostream>
+#include <vector>
+#include <cmath>
 
 namespace cubao
 {
@@ -65,9 +67,9 @@ double dist(const Point &p1, const Point &p2) {
     return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-double norm(const Point &p) { 
-	Point o;
-	return dist(p, o); 
+double norm(const Point &p) {
+    Point o;
+    return dist(p, o);
 }
 
 double norm(const Line &l) { return dist(l.a, l.b); }
