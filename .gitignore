@@ -10,3 +10,5 @@ CTestTestfile.cmake
 build
 *.pyc
 dist
+.vs
+.vscode

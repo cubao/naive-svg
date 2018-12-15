@@ -6,6 +6,7 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace cubao;
 
 size_t unix_time() {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch())
