@@ -33,9 +33,19 @@ void bbox(const vector<vector<double>> &points, //
 
 int main(int argc, char **argv)
 {
+    srand(time(nullptr));
+
     int n_points = 20;
-    double min_step = 20.0;
+    if (argc > 1) {
+        n_points = atoi(argv[1]);
+        cout << "set n_points to " << n_points << endl;
+    }
     double madness = 0.5;
+    if (argc > 2) {
+        madness = atof(argv[2]);
+        cout << "set madness to " << madness << endl;
+    }
+    double min_step = 20.0;
     double thresh = 20;
 
     SVG svg;
@@ -49,14 +59,20 @@ int main(int argc, char **argv)
     for (int i = 0; i < n_points; i++) {
         points.push_back(next_random_point(points[points.size() -2], points.back(), min_step, madness));
     }
-    auto point_daug = douglas(points, thresh);
-    update_svg(svg, points, SVG::Color(), 1, SVG::Color::RED, 3);
-    update_svg(svg, point_daug, SVG::Color(), 3, SVG::Color::GREEN, 5);
-
     double xmin, xmax, ymin, ymax;
     xmin = xmax = points[0][0];
     ymin = ymax = points[0][1];
     bbox(points, xmin, xmax, ymin, ymax);
+
+    auto points_daug = douglas(points, thresh);
+    update_svg(svg, points, SVG::Color(), 1, SVG::Color::RED, 3);
+    update_svg(svg, points_daug, SVG::Color(), 3, SVG::Color::GREEN, 5);
+    stringstream ss;
+    ss << "#points: " << points.size() << " -> " << points_daug.size();
+    cout << ss.str() << endl;
+    svg.texts.push_back(SVG::Text({(xmin + xmax) / 2, (ymin + ymax) / 2},
+                                  ss.str(), SVG::Color::GRAY, 36));
+
     double border_width = 20;
     xmin -= border_width;
     xmax += border_width;

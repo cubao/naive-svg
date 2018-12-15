@@ -38,9 +38,12 @@ struct SVG
         double stroke_width;
         Element() {}
         Element(std::vector<std::vector<double>> _points,
-                Color _stroke = Color(), double _stroke_width = 1)
-            : points(_points), stroke(_stroke), stroke_width(_stroke_width)
+                Color _stroke = Color(), double _stroke_width = 1, Color _fill = Color(-1))
+            : points(_points), stroke(_stroke), stroke_width(_stroke_width), fill(_fill)
         {
+            if (fill.invalid()) {
+                fill = stroke;
+            }
         }
         double x() const { return points[0][0]; }
         double y() const { return points[0][1]; }
@@ -64,11 +67,8 @@ struct SVG
         double r;
         Circle(std::vector<double> _p, double _r, Color _stroke = Color(),
                Color _fill = Color(-1), double _stroke_width = 1.0)
-            : Element({_p}, _stroke, _stroke_width), r(_r)
+            : Element({_p}, _stroke, _stroke_width, _fill), r(_r)
         {
-            if (fill.invalid()) {
-                fill = stroke;
-            }
         }
         Circle(double _x, double _y, double _r, Color _stroke = Color(),
                Color _fill = Color(-1), double _stroke_width = 1.0)
@@ -167,10 +167,11 @@ std::ostream &operator<<(std::ostream &out, const SVG::Circle &c)
 
 std::ostream &operator<<(std::ostream &out, const SVG::Text &t)
 {
-    out << "<text"                                        //
-        << " x='" << t.x() << "' y='" << t.y() << "'"	  //
-        << " fill='" << t.fill << "'"                     //
-        << " font-size='" << t.fontsize << "'"            //
+    out << "<text"                                    //
+        << " x='" << t.x() << "' y='" << t.y() << "'" //
+        << " fill='" << t.fill << "'"                 //
+        << " font-size='" << t.fontsize << "'"        //
+        << " font-family='monospace'"                 //
         << ">" << t.text << "</text>";
     return out;
 }

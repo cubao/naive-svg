@@ -6,7 +6,7 @@
 
 namespace cubao
 {
-class Line;
+struct Line;
 
 struct Point
 {
