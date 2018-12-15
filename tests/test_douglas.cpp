@@ -34,19 +34,29 @@ void bbox(const vector<vector<double>> &points, //
 int main(int argc, char **argv)
 {
     srand(time(nullptr));
+    cout << "Usage:\n\t" << argv[0] << "[npoint] [madness] [min_step] [thresh]"
+         << endl;
 
     int n_points = 20;
     if (argc > 1) {
         n_points = atoi(argv[1]);
-        cout << "set n_points to " << n_points << endl;
     }
     double madness = 0.5;
     if (argc > 2) {
         madness = atof(argv[2]);
-        cout << "set madness to " << madness << endl;
     }
-    double min_step = 20.0;
+    double min_step = 50.0;
+    if (argc > 3) {
+        min_step = atof(argv[3]);
+    }
     double thresh = 20;
+    if (argc > 4) {
+        thresh = atof(argv[4]);
+    }
+    cout << "n_points: " << n_points << endl;
+    cout << "madness: " << madness << endl;
+    cout << "min_step: " << min_step << endl;
+    cout << "thresh: " << thresh << endl;
 
     SVG svg;
     double &width = svg.width;
@@ -55,9 +65,10 @@ int main(int argc, char **argv)
     svg.grid_color = SVG::Color::GRAY;
     svg.background = SVG::Color::WHITE;
 
-    vector<vector<double>> points{{0, 0}, {0, 2 * min_step}};
+    vector<vector<double>> points{{0, 0}, {0, min_step}};
     for (int i = 0; i < n_points; i++) {
-        points.push_back(next_random_point(points[points.size() -2], points.back(), min_step, madness));
+        points.push_back(next_random_point(points[points.size() - 2],
+                                           points.back(), min_step, madness));
     }
     double xmin, xmax, ymin, ymax;
     xmin = xmax = points[0][0];
@@ -71,7 +82,7 @@ int main(int argc, char **argv)
     ss << "#points: " << points.size() << " -> " << points_daug.size();
     cout << ss.str() << endl;
     svg.texts.push_back(SVG::Text({(xmin + xmax) / 2, (ymin + ymax) / 2},
-                                  ss.str(), SVG::Color::GRAY, 36));
+                                  ss.str(), SVG::Color::GRAY, 24));
 
     double border_width = 20;
     xmin -= border_width;
@@ -154,10 +165,11 @@ vector<double> next_random_point(const vector<double> &_p0,
 }
 
 void bbox(const vector<vector<double>> &points, //
-          double &xmin, double &xmax, double &ymin, double &ymax) {
+          double &xmin, double &xmax, double &ymin, double &ymax)
+{
     for (auto &pt : points) {
         xmin = min(xmin, pt[0]);
-        xmax = max(xmin, pt[0]);
+        xmax = max(xmax, pt[0]);
         ymin = min(ymin, pt[1]);
         ymax = max(ymax, pt[1]);
     }

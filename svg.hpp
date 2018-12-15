@@ -38,8 +38,10 @@ struct SVG
         double stroke_width;
         Element() {}
         Element(std::vector<std::vector<double>> _points,
-                Color _stroke = Color(), double _stroke_width = 1, Color _fill = Color(-1))
-            : points(_points), stroke(_stroke), stroke_width(_stroke_width), fill(_fill)
+                Color _stroke = Color(), double _stroke_width = 1,
+                Color _fill = Color(-1))
+            : points(_points), stroke(_stroke), stroke_width(_stroke_width),
+              fill(_fill)
         {
             if (fill.invalid()) {
                 fill = stroke;
@@ -120,7 +122,7 @@ std::ostream &operator<<(std::ostream &out, const SVG::Circle &c);
 std::ostream &operator<<(std::ostream &out, const SVG::Text &t);
 std::ostream &operator<<(std::ostream &out, const SVG &s);
 
-// implementation 
+// implementation
 const SVG::Color SVG::Color::RED = SVG::Color(255, 0, 0);
 const SVG::Color SVG::Color::GREEN = SVG::Color(0, 255, 0);
 const SVG::Color SVG::Color::BLUE = SVG::Color(0, 0, 255);
@@ -156,11 +158,11 @@ std::ostream &operator<<(std::ostream &out, const SVG::Polyline &p)
 
 std::ostream &operator<<(std::ostream &out, const SVG::Circle &c)
 {
-    out << "<circle r='" << c.r << "'"                      //
-        << " cx='" << c.x() << "' cy='" << c.y() << "'"		//
-        << " style='stroke:" << c.stroke                    //
-        << ";stroke-width:" << c.stroke_width               //
-        << ";fill:" << c.fill << "'"                        //
+    out << "<circle r='" << c.r << "'"                  //
+        << " cx='" << c.x() << "' cy='" << c.y() << "'" //
+        << " style='stroke:" << c.stroke                //
+        << ";stroke-width:" << c.stroke_width           //
+        << ";fill:" << c.fill << "'"                    //
         << " />";
     return out;
 }
@@ -216,7 +218,7 @@ void SVG::save(std::string path) const
     file.close();
 }
 
-void interp(std::vector<std::vector<double>> &points, //
+void interp(std::vector<std::vector<double>> &points,           //
             double xmin, double xmax, double ymin, double ymax, //
             double width, double height)
 {

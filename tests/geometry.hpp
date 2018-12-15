@@ -1,8 +1,8 @@
 #pragma once
 
+#include <cmath>
 #include <ostream>
 #include <vector>
-#include <cmath>
 
 namespace cubao
 {
@@ -60,29 +60,36 @@ struct Line
     friend std::ostream &operator<<(std::ostream &out, const Line &l);
 };
 
-double dist(const Point &p1, const Point &p2) {
+double dist(const Point &p1, const Point &p2)
+{
     double dx = p1.x - p2.x;
     double dy = p1.y - p2.y;
     double dz = p1.z - p2.z;
     return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-double norm(const Point &p) {
+double norm(const Point &p)
+{
     Point o;
     return dist(p, o);
 }
 
 double norm(const Line &l) { return dist(l.a, l.b); }
 
-double dist(const Point &p, const Line &l) {
+double dist(const Point &p, const Line &l)
+{
     const Point &a = l.a;
     const Point &b = l.b;
     Vector ap = p - a;
     Vector ab = b - a;
     double d = dot(ap, ab);
     double n = norm(l);
-    if (d <= 0) { return norm(ap); }
-    if (d / n >= n) { return dist(p, b); }
+    if (d <= 0) {
+        return norm(ap);
+    }
+    if (d / n >= n) {
+        return dist(p, b);
+    }
     return fabs(norm(cross(ap, ab)) / n);
 }
 } // namespace cubao
