@@ -78,19 +78,31 @@ int main(int argc, char **argv)
     auto points_daug = douglas(points, thresh);
     update_svg(svg, points, SVG::Color(), 1, SVG::Color::RED, 3);
     update_svg(svg, points_daug, SVG::Color(), 3, SVG::Color::GREEN, 5);
-    stringstream ss;
-    ss << "#points: " << points.size() << " -> " << points_daug.size();
-    cout << ss.str() << endl;
-    svg.texts.push_back(SVG::Text({(xmin + xmax) / 2, (ymin + ymax) / 2},
-                                  ss.str(), SVG::Color::GRAY, 24));
 
     double border_width = 20;
     xmin -= border_width;
     xmax += border_width;
     ymin -= border_width;
     ymax += border_width;
+
+    stringstream ss;
+    ss << "#points: " << points.size() << " -> " << points_daug.size();
+    cout << ss.str() << endl;
+    svg.texts.push_back(SVG::Text({xmin, ymax - 10}, ss.str(), SVG::Color::RED, 24));
+
     width = xmax - xmin;
     height = ymax - ymin;
+    double ratio = height / width;
+    if (width > height) {
+        width = 1000;
+        height = 1000 * ratio; 
+    } else {
+        height = 1000;
+        width = height / ratio;
+    }
+
+    cout << "width: " << width << " height: " << height << endl;
+
     svg.fit_to_bbox(xmin, xmax, ymin, ymax);
 
     size_t epoch = unix_time();
