@@ -146,4 +146,5 @@
 	<circle r='5' cx='228.265' cy='632.248' style='stroke:rgb(0,255,0);stroke-width:1;fill:rgb(0,255,0)' />
 	<circle r='5' cx='129.479' cy='858.825' style='stroke:rgb(0,255,0);stroke-width:1;fill:rgb(0,255,0)' />
 	<circle r='5' cx='25.5101' cy='974.49' style='stroke:rgb(0,255,0);stroke-width:1;fill:rgb(0,255,0)' />
+	<text x='0' y='987.245' fill='rgb(255,0,0)' font-size='24' font-family='monospace'>#points: 12 -> 6</text>
 </svg>
