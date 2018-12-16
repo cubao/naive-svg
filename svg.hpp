@@ -1,9 +1,7 @@
 #pragma once
 
 #include <fstream>
-#include <iostream>
 #include <ostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -12,8 +10,8 @@ namespace cubao
 struct SVG
 {
     SVG(double _width = 0, double _height = 0)
-        : width(_width), height(_height), grid_step(-1), grid_color(Color()),
-          background(Color())
+        : width(_width), height(_height), grid_step(-1),
+          grid_color(Color::GRAY), background(Color::BLACK)
     {
     }
 
@@ -38,7 +36,7 @@ struct SVG
         double stroke_width;
         Element() {}
         Element(std::vector<std::vector<double>> _points,
-                Color _stroke = Color(), double _stroke_width = 1,
+                Color _stroke = Color::BLACK, double _stroke_width = 1,
                 Color _fill = Color(-1))
             : points(_points), stroke(_stroke), stroke_width(_stroke_width),
               fill(_fill)
@@ -54,11 +52,9 @@ struct SVG
     struct Polyline : Element
     {
         Polyline(std::vector<std::vector<double>> _points,
-                 Color _stroke = Color(), double _stroke_width = 1.0)
+                 Color _stroke = Color::BLACK, double _stroke_width = 1.0)
+            : Element(_points, _stroke, _stroke_width)
         {
-            points = _points;
-            stroke = _stroke;
-            stroke_width = _stroke_width;
         }
         friend std::ostream &operator<<(std::ostream &out,
                                         const SVG::Polyline &p);
@@ -67,12 +63,12 @@ struct SVG
     struct Circle : Element
     {
         double r;
-        Circle(std::vector<double> _p, double _r, Color _stroke = Color(),
+        Circle(std::vector<double> _p, double _r, Color _stroke = Color::BLACK,
                Color _fill = Color(-1), double _stroke_width = 1.0)
             : Element({_p}, _stroke, _stroke_width, _fill), r(_r)
         {
         }
-        Circle(double _x, double _y, double _r, Color _stroke = Color(),
+        Circle(double _x, double _y, double _r, Color _stroke = Color::BLACK,
                Color _fill = Color(-1), double _stroke_width = 1.0)
             : Circle({_x, _y}, _r, _stroke, _fill, _stroke_width)
         {
@@ -86,13 +82,13 @@ struct SVG
     {
         std::string text;
         double fontsize;
-        Text(std::vector<double> _p, std::string _text, Color _fill = Color(),
-             double _fontsize = 10)
+        Text(std::vector<double> _p, std::string _text,
+             Color _fill = Color::BLACK, double _fontsize = 10)
             : Element({_p}, _fill), text(_text), fontsize(_fontsize)
         {
         }
-        Text(double _x, double _y, std::string _text, Color _fill = Color(),
-             double _fontsize = 10)
+        Text(double _x, double _y, std::string _text,
+             Color _fill = Color::BLACK, double _fontsize = 10)
             : Text({_x, _y}, _text, _fill, _fontsize)
         {
         }

@@ -1,6 +1,6 @@
 # naive-svg
 
-naive SVG writer (python &amp; c++ implementation)
+naive SVG writer, python & c++ implementation (c++11, header only)
 
 naive?
 
