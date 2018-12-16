@@ -176,7 +176,8 @@ std::ostream &operator<<(std::ostream &out, const SVG::Text &t)
 
 std::ostream &operator<<(std::ostream &out, const SVG &s)
 {
-    out << "<svg width='" << s.width << "' height='" << s.height << "'>";
+    out << "<svg width='" << s.width << "' height='" << s.height << "'"
+        << " xmlns='http://www.w3.org/2000/svg'>";
     if (!s.background.invalid()) {
         out << "\n\t<rect width='100%' height='100%' fill='" //
             << s.background                                  //

@@ -12,9 +12,9 @@ C++11 compiler is needed.
 
 see <svg.hpp> for implementation. see <tests/test_douglas.cpp> for usage.
 
-![](img/a.bmp)
+![](img/a.svg)
 
-![](img/b.bmp)
+![](img/b.svg)
 
 ## Python
 
