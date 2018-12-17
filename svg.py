@@ -1,14 +1,15 @@
 import numpy as np
+from itertools import chain
 
 
 class Object(object):
     @property
     def x(self):
-        return self.points[0][0] if len(self.points) == 1 else self.points.mean(axis=0)[0]
+        return self.points[0][0]
 
     @property
     def y(self):
-        return self.points[0][1] if len(self.points) == 1 else self.points.mean(axis=0)[1]
+        return self.points[0][1]
 
     def __repr__(self):
         raise NotImplementedError
@@ -32,7 +33,7 @@ class SVG(Object):
         self.texts = []
 
         self.grid_step = -1
-        self.grid_color = None
+        self.grid_color = [155, 155, 155]
         self.background = None
 
     class Polyline(Object):
@@ -71,22 +72,25 @@ class SVG(Object):
 
     def __repr__(self):
         lines = []
-        lines.append("<svg width='{}' height='{}'>".format(self.width, self.height))
+        lines.append("<svg width='{}' height='{}' xmlns='http://www.w3.org/2000/svg'>".format(self.width, self.height))
         if self.background:
             lines.append("\t<rect width='100%' height='100%' fill='{}' />".format(rgb(self.background)))
         if self.grid_step > 0:
             grid_color = self.grid_color or [155, 155, 155]
             for i in np.arange(0, self.height, self.grid_step):
-                stroke_width = 2 if i % 100 == 0 else 1
-                lines.append('\t{}'.format(SVG.Polyline([[0, i], [self.width, i]], grid_color, stroke_width)))
+                lines.append('\t{}'.format(SVG.Polyline([[0, i], [self.width, i]], grid_color)))
             for j in np.arange(0, self.width, self.grid_step):
-                stroke_width = 2 if j % 100 == 0 else 1
-                lines.append('\t{}'.format(SVG.Polyline([[j, 0], [j, self.height]], grid_color, stroke_width)))
+                lines.append('\t{}'.format(SVG.Polyline([[j, 0], [j, self.height]], grid_color)))
         lines.extend(['\t{}'.format(p) for p in self.polylines])
         lines.extend(['\t{}'.format(c) for c in self.circles])
         lines.extend(['\t{}'.format(t) for t in self.texts])
         lines.append('</svg>')
         return '\n'.join(lines)
+
+    def fit_to_bbox(self, xmin, xmax, ymin, ymax):
+        for poi in chain(self.polylines, self.circles, self.texts):
+            poi.points[:, 0] = np.interp(poi.points[:, 0], [xmin, xmax], [0, self.width])
+            poi.points[:, 1] = np.interp(poi.points[:, 1], [ymin, ymax], [0, self.height])
 
     def save(self, path):
         with open(path, 'w') as f:
@@ -108,13 +112,4 @@ if __name__ == '__main__':
     svg.polylines.append(SVG.Polyline([[0, 0], [20, 20]]))
     svg.polylines.append(SVG.Polyline([[20, 20], [100, 100]], red, 2))
     svg.polylines.append(SVG.Polyline([[100, 100], [200, 200], [svg.width, svg.height]], red, 0.5))
-    svg.texts.append(SVG.Text(100, 100, 'text', green, 25))
-
     print(svg)
-
-    svg.background = white
-    svg.grid_step = 10
-    path = '/tmp/output.svg'
-    svg.save(path)
-    print('wrote to "{}"'.format(path))
-

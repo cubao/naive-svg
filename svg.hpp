@@ -11,7 +11,7 @@ struct SVG
 {
     SVG(double _width = 0, double _height = 0)
         : width(_width), height(_height), grid_step(-1),
-          grid_color(Color::GRAY), background(Color::BLACK)
+          grid_color(Color::GRAY), background(Color(-1))
     {
     }
 
