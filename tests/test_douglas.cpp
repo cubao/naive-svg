@@ -88,14 +88,15 @@ int main(int argc, char **argv)
     stringstream ss;
     ss << "#points: " << points.size() << " -> " << points_daug.size();
     cout << ss.str() << endl;
-    svg.texts.push_back(SVG::Text({xmin, ymax - 10}, ss.str(), SVG::Color::RED, 24));
+    svg.texts.push_back(
+        SVG::Text({xmin, ymax - 10}, ss.str(), SVG::Color::RED, 24));
 
     width = xmax - xmin;
     height = ymax - ymin;
     double ratio = height / width;
     if (width > height) {
         width = 1000;
-        height = 1000 * ratio; 
+        height = 1000 * ratio;
     } else {
         height = 1000;
         width = height / ratio;
