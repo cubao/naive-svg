@@ -3,6 +3,14 @@ from itertools import chain
 
 
 class Object(object):
+    def __init__(self, points=None, stroke=None, stroke_width=1, fill=None):
+        if points is None:
+            points = []
+        self.points = np.array(points)
+        self.stroke = stroke or [0, 0, 0]
+        self.stroke_width = stroke_width
+        self.fill = fill or list(self.stroke)
+
     @property
     def x(self):
         return self.points[0][0]
@@ -16,6 +24,8 @@ class Object(object):
 
 
 def rgb(color):
+    if color is None:
+        return 'none'
     try:
         r, g, b = color
         return 'rgb({},{},{})'.format(r, g, b)
@@ -28,6 +38,7 @@ class SVG(Object):
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.polygons = []
         self.polylines = []
         self.circles = []
         self.texts = []
@@ -37,23 +48,27 @@ class SVG(Object):
         self.background = None
 
     class Polyline(Object):
-        def __init__(self, points, stroke=None, stroke_width=1):
-            self.points = np.array(points)
-            self.stroke = stroke or [0, 0, 0]
-            self.stroke_width = stroke_width
+        def __init__(self, points, stroke=None, stroke_width=1, fill=None):
+            super().__init__(points, stroke, stroke_width, fill)
+            self.fill = None
+            self.tag = 'polyline'
 
         def __repr__(self):
             points = ' '.join(['{},{}'.format(pt[0], pt[1]) for pt in self.points])
-            return "<polyline style='stroke:{};stroke-width:{};fill:none' points='{}' />" \
-                .format(rgb(self.stroke), self.stroke_width, points)
+            return "<{} style='stroke:{};stroke-width:{};fill:{}' points='{}' />" \
+                .format(self.tag, rgb(self.stroke), self.stroke_width, rgb(self.fill), points)
+
+    class Polygon(Polyline):
+        def __init__(self, points, fill=None, stroke=None, stroke_width=1):
+            super().__init__(points, stroke, stroke_width, fill)
+            self.fill = fill
+            self.stroke = stroke
+            self.tag = 'polygon'
 
     class Circle(Object):
         def __init__(self, x, y, r=1, stroke=None, fill=None, stroke_width=1):
-            self.points = np.array([[x, y]])
+            super().__init__(np.array([[x, y]]), stroke, stroke_width, fill)
             self.r = r
-            self.stroke = stroke or [0, 0, 0]
-            self.fill = fill or self.stroke
-            self.stroke_width = stroke_width
 
         def __repr__(self):
             return "<circle r='{}' cx='{}' cy='{}' style='stroke:{};stroke-width:{};fill:{}' />" \
@@ -61,9 +76,8 @@ class SVG(Object):
 
     class Text(Object):
         def __init__(self, x, y, text, fill=None, fontsize=10):
-            self.points = np.array([[x, y]])
+            super().__init__(np.array([[x, y]]), fill, 1, fill)
             self.text = text
-            self.fill = fill or [0, 0, 0]
             self.fontsize = fontsize
 
         def __repr__(self):
@@ -81,6 +95,7 @@ class SVG(Object):
                 lines.append('\t{}'.format(SVG.Polyline([[0, i], [self.width, i]], grid_color)))
             for j in np.arange(0, self.width, self.grid_step):
                 lines.append('\t{}'.format(SVG.Polyline([[j, 0], [j, self.height]], grid_color)))
+        lines.extend(['\t{}'.format(p) for p in self.polygons])
         lines.extend(['\t{}'.format(p) for p in self.polylines])
         lines.extend(['\t{}'.format(c) for c in self.circles])
         lines.extend(['\t{}'.format(t) for t in self.texts])
@@ -88,7 +103,7 @@ class SVG(Object):
         return '\n'.join(lines)
 
     def fit_to_bbox(self, xmin, xmax, ymin, ymax):
-        for poi in chain(self.polylines, self.circles, self.texts):
+        for poi in chain(self.polygons, self.polylines, self.circles, self.texts):
             poi.points[:, 0] = np.interp(poi.points[:, 0], [xmin, xmax], [0, self.width])
             poi.points[:, 1] = np.interp(poi.points[:, 1], [ymin, ymax], [0, self.height])
 
@@ -112,4 +127,5 @@ if __name__ == '__main__':
     svg.polylines.append(SVG.Polyline([[0, 0], [20, 20]]))
     svg.polylines.append(SVG.Polyline([[20, 20], [100, 100]], red, 2))
     svg.polylines.append(SVG.Polyline([[100, 100], [200, 200], [svg.width, svg.height]], red, 0.5))
+    svg.polygons.append(SVG.Polygon([[100, 100], [200, 200], [svg.width, svg.height]], red))
     print(svg)
