@@ -1,4 +1,5 @@
 #include "svg.hpp"
+#include "encodeURIComponent.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -14,8 +15,14 @@ size_t unix_time()
         .count();
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if (argc > 1) {
+        string encoded = svg2dataUrl(argv[1]);
+        cout << "dataurl: (paste to browerser navigation to view)\n"
+            << encoded << endl;
+        return 0;
+    }
     SVG svg(40, 30);
     svg.circles.push_back(
         SVG::Circle({10, 10}, 4, SVG::Color::BLACK, SVG::Color::GREEN));
