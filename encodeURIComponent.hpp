@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 
-bool encodeURIComponent(const std::string &path, std::string &encoded_string) {
+bool encodeURIComponent(const std::string &path, std::string &encoded_string)
+{
     // reference implementation:
     //      https://www.w3.org/International/URLUTF8Encoder.java
     using namespace std;
@@ -78,7 +79,8 @@ bool encodeURIComponent(const std::string &path, std::string &encoded_string) {
     return true;
 }
 
-std::string svg2dataUrl(const std::string &svg_path) {
+std::string svg2dataUrl(const std::string &svg_path)
+{
     std::string encoded;
     if (encodeURIComponent(svg_path, encoded)) {
         return "data:image/svg+xml," + encoded;
